@@ -3,14 +3,14 @@ from flask import Flask, request, Response, abort
 
 app = Flask(__name__)
 VERIFY_TOKEN = os.environ.get("WHATSAPP_VERIFY_TOKEN", "")
-APP_SECRET   = os.environ.get("META_APP_SECRET", "")  # opcional
+APP_SECRET   = os.environ.get("META_APP_SECRET", "")
 
 def verify_signature(raw_body: bytes, signature_header: str) -> bool:
     if not APP_SECRET or not signature_header:
         return True
     try:
         scheme, signature = signature_header.split("=", 1)
-        if scheme != "sha256": 
+        if scheme != "sha256":
             return False
         digest = hmac.new(APP_SECRET.encode(), raw_body, hashlib.sha256).hexdigest()
         return hmac.compare_digest(digest, signature)
