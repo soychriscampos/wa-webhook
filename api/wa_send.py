@@ -2,7 +2,7 @@
 import os
 import requests
 
-WHATSAPP_TOKEN = os.environ["WHATSAPP_TOKEN"]
+WHATSAPP_TOKEN = os.environ["META_PERMANENT_TOKEN"]
 PHONE_NUMBER_ID = os.environ["WHATSAPP_PHONE_NUMBER_ID"]
 
 def send_template(to_whatsapp: str, template_name: str, vars_list: list[str]):
