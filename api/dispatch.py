@@ -10,7 +10,7 @@ def dispatch():
         # Importamos aquí para que cualquier error de import/env vars
         # quede atrapado en este try/except.
         from supa_client import get_supa
-        from wa_send import send_template
+        from api.wa_send import send_template
 
         supa = get_supa()
 
