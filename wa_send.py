@@ -1,4 +1,4 @@
-# api/wa_send.py
+# wa_send.py
 import os
 import requests
 

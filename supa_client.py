@@ -1,8 +1,8 @@
-# api/supa_client.py
+# supa_client.py
 import os
-from supabase import create_client, Client
+from supabase import create_client
 
-def get_supa() -> Client:
+def get_supa():
     url = os.environ.get("SUPABASE_URL")
     key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
 
