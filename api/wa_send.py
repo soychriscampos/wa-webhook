@@ -2,17 +2,20 @@
 import os
 import requests
 
-WHATSAPP_TOKEN = os.environ["META_PERMANENT_TOKEN"]
-PHONE_NUMBER_ID = os.environ["WHATSAPP_PHONE_NUMBER_ID"]
-
-def send_template(to_whatsapp: str, template_name: str, vars_list: list[str]):
+def send_template(to_whatsapp, template_name, vars_list):
     """
     Envía un template de WhatsApp.
     - template_name: nombre del template en Meta (ej. 'agradecimiento_pago')
     - vars_list: lista de variables de cuerpo en orden.
     """
 
-    url = f"https://graph.facebook.com/v21.0/{PHONE_NUMBER_ID}/messages"
+    token = os.environ.get("META_PERMANENT_TOKEN")
+    phone_number_id = os.environ.get("WHATSAPP_PHONE_NUMBER_ID")
+
+    if not token or not phone_number_id:
+        raise RuntimeError("Faltan META_PERMANENT_TOKEN o WHATSAPP_PHONE_NUMBER_ID en env vars")
+
+    url = f"https://graph.facebook.com/v21.0/{phone_number_id}/messages"
     
     payload = {
         "messaging_product": "whatsapp",
@@ -33,7 +36,7 @@ def send_template(to_whatsapp: str, template_name: str, vars_list: list[str]):
     }
 
     headers = {
-        "Authorization": f"Bearer {WHATSAPP_TOKEN}",
+        "Authorization": f"Bearer {token}",
         "Content-Type": "application/json"
     }
 

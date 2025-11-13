@@ -1,17 +1,19 @@
 # api/dispatch.py
 from datetime import datetime
-from flask import Flask, request, jsonify
-from supa_client import get_supa
-from wa_send import send_template
+from flask import Flask, jsonify
 
 app = Flask(__name__)
 
 @app.post("/api/dispatch")
 def dispatch():
     try:
+        # Importamos aquí para que cualquier error de import/env vars
+        # quede atrapado en este try/except.
+        from supa_client import get_supa
+        from wa_send import send_template
+
         supa = get_supa()
 
-        # 1) Leer hasta 10 mensajes pendientes en la outbox
         out = supa.table("wa_outbox") \
             .select("*") \
             .eq("status", "PENDING") \
@@ -37,7 +39,7 @@ def dispatch():
             try:
                 to = row["to_whatsapp"]
                 template_name = row.get("template_name", "agradecimiento_pago")
-                vars_list = row["vars"] if isinstance(row["vars"], list) else []
+                vars_list = row.get("vars") or []
 
                 # Enviar mensaje vía WhatsApp
                 send_template(to, template_name, vars_list)
@@ -61,7 +63,7 @@ def dispatch():
         return jsonify({"ok": True, "processed": processed})
     
     except Exception as e:
-        # cachando errores: env vars, imports, supabase, etc.
+        # Aquí atrapamos errores gordos: supabase no instalado, env vars faltantes, etc.
         return jsonify({
             "ok": False,
             "error": str(e)
